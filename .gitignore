@@ -1,0 +1,17 @@
+.bundle
+db/*.qlite3
+log/*.log
+tmp/**/*
+config/database.yml
+tmp/*
+doc/api
+doc/app
+*.swp
+*.swo
+*.un~
+*˜
+.DS_Store
+schema.rb
+.tags
+emails/*
+public/uploads/*
