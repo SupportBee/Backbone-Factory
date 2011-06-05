@@ -12,7 +12,7 @@
       //this.factories[factory_name] = {};
       this.factories[factory_name] = function(options){
         if(options === undefined) options = function(){return {}};
-        arguments =  _.extend({}, defaults.call(), options.call());
+        arguments =  _.extend({}, {id: BackboneFactory.next("_" + factory_name + "_id")}, defaults.call(), options.call());
         return new klass(arguments);
       };
 
@@ -27,9 +27,7 @@
       if(this.factories[factory_name] === undefined){
         throw "Factory with name " + factory_name + " does not exist";
       }
-      var newObject = this.factories[factory_name].apply(null, [options]);        
-      newObject.id = BackboneFactory.next("_" + factory_name + "_id");
-      return newObject;
+      return this.factories[factory_name].apply(null, [options]);        
     },
 
     define_sequence: function(sequence_name, callback){
