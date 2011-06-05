@@ -18,8 +18,22 @@ describe("Backbone Factory", function() {
   describe("Defining and using Factories", function(){
 
     beforeEach(function() {
-      var postFactory = BackboneFactory.define('post', Post);
-      var userFactory = BackboneFactory.define('user', User, {name : 'Backbone User'});
+      var emailSequence = BackboneFactory.define_sequence('person_email', function(n){
+        return "person"+n+"@example.com"; 
+      });
+      var postFactory = BackboneFactory.define('post', Post, function(){
+                                          return {
+                                            //author: BackboneFactory.create('user')
+                                          };
+                                          }
+        );
+      var userFactory = BackboneFactory.define('user', User, function(){
+                                   return {
+                                     name : 'Backbone User',
+                                     email: BackboneFactory.next('person_email')
+                                      };
+                                    }
+                                   );
 
       this.postObject = BackboneFactory.create('post');
       this.userObject = BackboneFactory.create('user');
@@ -42,7 +56,12 @@ describe("Backbone Factory", function() {
 
     it("should use the defaults supplied when creating objects", function() {
       expect(this.userObject.get('name')).toBe('Backbone User');
-            
+    });
+
+    it("should work with sequences", function(){
+      expect(this.userObject.get('email')).toBe('person1@example.com');
+      var anotherUser = BackboneFactory.create('user');
+      expect(anotherUser.get('email')).toBe('person2@example.com');
     });
   });  
   

@@ -8,9 +8,10 @@
     sequences: {},
 
     define: function(factory_name, klass, defaults){
+      if(defaults === undefined) defaults = function(){return {}};
       //this.factories[factory_name] = {};
       this.factories[factory_name] = function(){
-        return new klass(defaults);
+        return new klass(defaults.call());
       };
       //this.factories[factory_name]['defaults'] = defaults;
     },
