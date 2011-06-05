@@ -23,7 +23,7 @@ describe("Backbone Factory", function() {
       });
       var postFactory = BackboneFactory.define('post', Post, function(){
                                           return {
-                                            //author: BackboneFactory.create('user')
+                                            author: BackboneFactory.create('user')
                                           };
                                           }
         );
@@ -59,10 +59,28 @@ describe("Backbone Factory", function() {
     });
 
     it("should work with sequences", function(){
-      expect(this.userObject.get('email')).toBe('person1@example.com');
+      expect(this.userObject.get('email')).toBe('person2@example.com');
       var anotherUser = BackboneFactory.create('user');
-      expect(anotherUser.get('email')).toBe('person2@example.com');
+      expect(anotherUser.get('email')).toBe('person3@example.com');
     });
+
+    it("should work if other factories are passed", function(){
+      expect(this.postObject.get('author') instanceof User).toBeTruthy(); 
+    })
+
+    it("should override defaults if arguments are passed on creation", function(){
+      var userWithEmail = BackboneFactory.create('user', function(){
+                                             return {
+                                                email: 'overriden@example.com'
+                                              };
+                            });
+      expect(userWithEmail.get('email')).toBe('overriden@example.com');
+    });
+
+    xit("should have an id", function() {
+      
+    });
+    
   });  
   
 });        

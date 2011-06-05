@@ -10,17 +10,19 @@
     define: function(factory_name, klass, defaults){
       if(defaults === undefined) defaults = function(){return {}};
       //this.factories[factory_name] = {};
-      this.factories[factory_name] = function(){
-        return new klass(defaults.call());
+      this.factories[factory_name] = function(options){
+        if(options === undefined) options = function(){return {}};
+        arguments =  _.extend({}, defaults.call(), options.call());
+        return new klass(arguments);
       };
       //this.factories[factory_name]['defaults'] = defaults;
     },
 
-    create: function(factory_name){
+    create: function(factory_name, options){
       if(this.factories[factory_name] === undefined){
         throw "Factory with name " + factory_name + " does not exist";
       }
-      return (this.factories[factory_name].call());        
+      return (this.factories[factory_name].apply(null, [options]));        
     },
 
     define_sequence: function(sequence_name, callback){
