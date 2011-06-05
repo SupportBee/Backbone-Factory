@@ -77,8 +77,14 @@ describe("Backbone Factory", function() {
       expect(userWithEmail.get('email')).toBe('overriden@example.com');
     });
 
-    xit("should have an id", function() {
-      
+    it("should have an id", function() {
+      expect(this.userObject.id).toBeDefined();
+    });
+
+    it("should have an id that increments on creation", function(){
+      var firstID = BackboneFactory.create('user').id;
+      var secondID = BackboneFactory.create('user').id;
+      expect(secondID).toBe(firstID + 1);
     });
     
   });  

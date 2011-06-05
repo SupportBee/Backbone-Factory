@@ -15,6 +15,11 @@
         arguments =  _.extend({}, defaults.call(), options.call());
         return new klass(arguments);
       };
+
+      // Lets define a sequence for id
+      BackboneFactory.define_sequence("_"+ factory_name +"_id", function(n){
+        return n
+      });
       //this.factories[factory_name]['defaults'] = defaults;
     },
 
@@ -22,7 +27,9 @@
       if(this.factories[factory_name] === undefined){
         throw "Factory with name " + factory_name + " does not exist";
       }
-      return (this.factories[factory_name].apply(null, [options]));        
+      var newObject = this.factories[factory_name].apply(null, [options]);        
+      newObject.id = BackboneFactory.next("_" + factory_name + "_id");
+      return newObject;
     },
 
     define_sequence: function(sequence_name, callback){
@@ -32,7 +39,6 @@
     },
 
     next: function(sequence_name){
-      console.log(this.sequences[sequence_name]['counter']);
       this.sequences[sequence_name]['counter'] += 1;
       return this.sequences[sequence_name]['callback'].apply(null, [this.sequences[sequence_name]['counter']]); //= callback; 
     }
