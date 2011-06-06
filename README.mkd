@@ -1,0 +1,108 @@
+Backbone Factory
+================
+
+Introduction
+------------
+
+Backbone Factory is a small javascript library for creating [Backbone.js](http://documentcloud.github.com/backbone/) objects for testing your code. It has no external dependency. 
+
+
+Installation
+------------
+
+To use it, just [download](https://github.com/SupportBee/Backbone-Factory/raw/master/public/javascripts/backbone-factory.js) the file and include it in your testing setup.  
+Usage
+-----
+
+Lets say you have two Backbone models, Post and User
+
+```javascript
+var User = Backbone.Model.extend({
+
+  name: null,
+  email: null
+
+});
+
+var Post = Backbone.Model.extend({
+
+  defaults: {
+    title: 'Default Title'
+  }
+
+});
+```
+
+### Defining Factories
+
+To define factories for them
+
+```javascript
+var postFactory = BackboneFactory.define('post', Post);
+var userFactory = BackboneFactory.define('user', User);
+```
+
+### Using Factories
+
+To use these factories, 
+
+```javscript
+this.postObject = BackboneFactory.create('post');
+this.userObject = BackboneFactory.create('user');
+```
+
+This will create objects using the [defaults](http://documentcloud.github.com/backbone/#Model-defaults) you have in your class definitions.
+
+
+### Defining Sequences 
+
+```javascript
+var emailSequence = BackboneFactory.define_sequence('email', function(n){
+        return "person"+n+"@example.com"; 
+      });
+```
+
+### Using Sequences
+
+```javascript
+var email = BackboneFactory.next('email') // person1@example.com
+```
+
+### Defining Factories with defaults
+
+```javascript
+var userFactory = BackboneFactory.define('user', User, function(){
+                                   return {
+                                     name : 'Backbone User',
+                                     email: BackboneFactory.next('person_email')
+                                      };
+                                    }
+                                   );
+```
+
+### Overriding defaults when creating objects
+
+```javascript
+var userWithEmail = BackboneFactory.create('user', function(){
+                                             return {
+                                                email: 'overriden@example.com'
+                                              };
+                            });
+ ```
+
+Contributing
+------------
+
+1. Open a ticket on GitHub, maybe someone else has the problem too
+2. Make a fork of my GitHub repository
+3. Make a spec driven change to the code base (we use [jasmine](http://pivotal.github.com/jasmine/))
+5. Make sure it works and all specs pass
+6. Update the README if needed to reflect your change / addition
+7. With all specs passing push your changes back to your fork
+8. Send me a pull request
+
+
+
+
+
+

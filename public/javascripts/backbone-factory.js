@@ -13,10 +13,7 @@
         throw "Factory name should not contain spaces or other funky characters";
       }
 
-
-
       if(defaults === undefined) defaults = function(){return {}};
-
 
       // The object creator
       this.factories[factory_name] = function(options){
