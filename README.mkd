@@ -6,6 +6,8 @@ Introduction
 
 Backbone Factory is a small javascript library for creating [Backbone.js](http://documentcloud.github.com/backbone/) objects for testing your code. It has no external dependency. 
 
+The API is heavily inspired by the awesome [Factory Girl](https://github.com/thoughtbot/factory_girl). 
+
 
 Installation
 ------------
