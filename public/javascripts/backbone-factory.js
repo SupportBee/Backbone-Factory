@@ -1,4 +1,5 @@
 // Backbone Factory JS
+// https://github.com/SupportBee/Backbone-Factory
 
 (function(){
   window.BackboneFactory = {
