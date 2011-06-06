@@ -1,5 +1,4 @@
 // Backbone Factory JS
-//
 
 (function(){
   window.BackboneFactory = {
@@ -8,8 +7,18 @@
     sequences: {},
 
     define: function(factory_name, klass, defaults){
+
+      // Check for arguments' sanity
+      if(factory_name.match(/[^\w_]+/)){
+        throw "Factory name should not contain spaces or other funky characters";
+      }
+
+
+
       if(defaults === undefined) defaults = function(){return {}};
-      //this.factories[factory_name] = {};
+
+
+      // The object creator
       this.factories[factory_name] = function(options){
         if(options === undefined) options = function(){return {}};
         arguments =  _.extend({}, {id: BackboneFactory.next("_" + factory_name + "_id")}, defaults.call(), options.call());
@@ -20,7 +29,6 @@
       BackboneFactory.define_sequence("_"+ factory_name +"_id", function(n){
         return n
       });
-      //this.factories[factory_name]['defaults'] = defaults;
     },
 
     create: function(factory_name, options){
@@ -37,6 +45,9 @@
     },
 
     next: function(sequence_name){
+      if(this.sequences[sequence_name] === undefined){
+        throw "Sequence with name " + sequence_name + " does not exist";
+      }
       this.sequences[sequence_name]['counter'] += 1;
       return this.sequences[sequence_name]['callback'].apply(null, [this.sequences[sequence_name]['counter']]); //= callback; 
     }

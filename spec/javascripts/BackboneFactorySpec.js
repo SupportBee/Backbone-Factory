@@ -50,9 +50,7 @@ describe("Backbone Factory", function() {
       expect(this.postObject.get('title')).toBe('Default Title');
     });
 
-    it("should throw an error if you try to use an undefined factory", function() {
-      expect(function(){BackboneFactory.create('undefined_factory')}).toThrow("Factory with name undefined_factory does not exist");
-    });
+    
 
     it("should use the defaults supplied when creating objects", function() {
       expect(this.userObject.get('name')).toBe('Backbone User');
@@ -86,6 +84,22 @@ describe("Backbone Factory", function() {
       var secondID = BackboneFactory.create('user').id;
       expect(secondID).toBe(firstID + 1);
     });
+    
+    describe("Error Messages", function() {
+
+      it("should throw an error if factory_name is not proper", function() {
+        expect(function(){BackboneFactory.define('wrong name', Post)}).toThrow("Factory name should not contain spaces or other funky characters");
+      });
+
+      it("should throw an error if you try to use an undefined factory", function() {
+        expect(function(){BackboneFactory.create('undefined_factory')}).toThrow("Factory with name undefined_factory does not exist");
+      });
+
+      it("should throw an error if you try to use an undefined sequence", function() {
+        expect(function(){BackboneFactory.next('undefined_sequence')}).toThrow("Sequence with name undefined_sequence does not exist");
+      });
+      
+    });  
     
   });  
   
