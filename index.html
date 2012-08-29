@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Backbone-factory by SupportBee</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Backbone-factory</h1>
+        <p>A factory for creating backbone objects for testing</p>
+
+        <p class="view"><a href="https://github.com/SupportBee/Backbone-Factory">View the Project on GitHub <small>SupportBee/Backbone-Factory</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/SupportBee/Backbone-Factory/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/SupportBee/Backbone-Factory/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/SupportBee/Backbone-Factory">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Backbone Factory</h1>
+
+<h2>Introduction</h2>
+
+<p>Backbone Factory is a small javascript library for creating <a href="http://documentcloud.github.com/backbone/">Backbone.js</a> objects for testing your code. It has no external dependency. </p>
+
+<p>The API is heavily inspired by the awesome <a href="https://github.com/thoughtbot/factory_girl">Factory Girl</a>. </p>
+
+<h2>Installation</h2>
+
+<p>To use it, just <a href="https://github.com/SupportBee/Backbone-Factory/raw/master/public/javascripts/backbone-factory.js">download</a> the file and include it in your testing setup.  </p>
+
+<h2>Usage</h2>
+
+<p>Lets say you have two Backbone models, Post and User</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">User</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+  <span class="nx">name</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nx">email</span><span class="o">:</span> <span class="kc">null</span>
+
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">Post</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+  <span class="nx">defaults</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s1">'Default Title'</span>
+  <span class="p">}</span>
+
+<span class="p">});</span>
+</pre></div>
+
+<h3>Defining Factories</h3>
+
+<p>To define factories for them</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">postFactory</span> <span class="o">=</span> <span class="nx">BackboneFactory</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'post'</span><span class="p">,</span> <span class="nx">Post</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">userFactory</span> <span class="o">=</span> <span class="nx">BackboneFactory</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'user'</span><span class="p">,</span> <span class="nx">User</span><span class="p">);</span>
+</pre></div>
+
+<h3>Using Factories</h3>
+
+<p>To use these factories, </p>
+
+<pre lang="javscript"><code>this.postObject = BackboneFactory.create('post');
+this.userObject = BackboneFactory.create('user');
+</code></pre>
+
+<p>This will create objects using the <a href="http://documentcloud.github.com/backbone/#Model-defaults">defaults</a> you have in your class definitions.</p>
+
+<h3>Defining Sequences</h3>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">emailSequence</span> <span class="o">=</span> <span class="nx">BackboneFactory</span><span class="p">.</span><span class="nx">define_sequence</span><span class="p">(</span><span class="s1">'email'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">n</span><span class="p">){</span>
+        <span class="k">return</span> <span class="s2">"person"</span><span class="o">+</span><span class="nx">n</span><span class="o">+</span><span class="s2">"@example.com"</span><span class="p">;</span> 
+      <span class="p">});</span>
+</pre></div>
+
+<h3>Using Sequences</h3>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">email</span> <span class="o">=</span> <span class="nx">BackboneFactory</span><span class="p">.</span><span class="nx">next</span><span class="p">(</span><span class="s1">'email'</span><span class="p">)</span> <span class="c1">// person1@example.com</span>
+</pre></div>
+
+<h3>Defining Factories with defaults</h3>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">userFactory</span> <span class="o">=</span> <span class="nx">BackboneFactory</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">'user'</span><span class="p">,</span> <span class="nx">User</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+                                   <span class="k">return</span> <span class="p">{</span>
+                                     <span class="nx">name</span> <span class="o">:</span> <span class="s1">'Backbone User'</span><span class="p">,</span>
+                                     <span class="nx">email</span><span class="o">:</span> <span class="nx">BackboneFactory</span><span class="p">.</span><span class="nx">next</span><span class="p">(</span><span class="s1">'person_email'</span><span class="p">)</span>
+                                      <span class="p">};</span>
+                                    <span class="p">}</span>
+                                   <span class="p">);</span>
+</pre></div>
+
+<h3>Overriding defaults when creating objects</h3>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">userWithEmail</span> <span class="o">=</span> <span class="nx">BackboneFactory</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'user'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+                                             <span class="k">return</span> <span class="p">{</span>
+                                                <span class="nx">email</span><span class="o">:</span> <span class="s1">'overriden@example.com'</span>
+                                              <span class="p">};</span>
+                            <span class="p">});</span>
+</pre></div>
+
+<h2>Contributing</h2>
+
+<ol>
+<li>Open a ticket on GitHub, maybe someone else has the problem too</li>
+<li>Make a fork of my GitHub repository</li>
+<li>Make a spec driven change to the code base (we use <a href="http://pivotal.github.com/jasmine/">jasmine</a>)</li>
+<li>Make sure it works and all specs pass</li>
+<li>Update the README if needed to reflect your change / addition</li>
+<li>With all specs passing push your changes back to your fork</li>
+<li>Send me a pull request</li>
+</ol><h2>License</h2>
+
+<p>(The MIT License)</p>
+
+<p>Copyright (c) 2009, 2010, 2011</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/SupportBee">SupportBee</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
