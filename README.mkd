@@ -55,6 +55,12 @@ this.userObject = BackboneFactory.create('user');
 
 This will create objects using the [defaults](http://documentcloud.github.com/backbone/#Model-defaults) you have in your class definitions.
 
+Creating lists of objects,
+
+```javscript
+this.postObjects = BackboneFactory.create_list('post', 3); // Creates an array of 3 posts
+this.userObjects = BackboneFactory.create_list('user', 7, options); // Creates an array of 7 users with given options
+```
 
 ### Defining Sequences 
 
