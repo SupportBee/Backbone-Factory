@@ -10,7 +10,7 @@
     define: function(factory_name, klass, defaults){
 
       // Check for arguments' sanity
-      if(factory_name.match(/[^\w_]+/)){
+      if(factory_name.match(/[^\w-_]+/)){
         throw "Factory name should not contain spaces or other funky characters";
       }
 
