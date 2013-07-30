@@ -90,6 +90,10 @@ describe("Backbone Factory", function() {
       it("should throw an error if factory_name is not proper", function() {
         expect(function(){BackboneFactory.define('wrong name', Post)}).toThrow("Factory name should not contain spaces or other funky characters");
       });
+      
+      it("should not throw an error if factory_name has a hyphen", function() {
+        expect(function(){BackboneFactory.define('okay-name', Post)}).not.toThrow();
+      });
 
       it("should throw an error if you try to use an undefined factory", function() {
         expect(function(){BackboneFactory.create('undefined_factory')}).toThrow("Factory with name undefined_factory does not exist");
