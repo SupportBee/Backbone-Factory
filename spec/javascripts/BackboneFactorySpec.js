@@ -125,19 +125,19 @@ describe("Backbone Factory", function() {
     });
 
 
-    it ("should create model using schema if present", function() {
+    it("should create model using schema if present", function() {
       expect(this.userObject.get('name')).toEqual('Backbone User');
     });
 
-    it ("should get email using sequence", function() {
+    it("should get email using sequence", function() {
       expect(this.userObject.get('email')).toEqual('person1@example.com');
     });
 
-    it ("defaults option should override default from schema", function() {
+    it("defaults option should override default from schema", function() {
       expect(this.postObject.get('title')).toEqual('Default Title');
     });
 
-    it ("should fallback to schema.default", function() {
+    it("should fallback to schema.default", function() {
       expect(this.postObject.get('body')).toEqual('Default body');
     });
 
