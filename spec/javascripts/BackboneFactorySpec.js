@@ -1,10 +1,11 @@
+/*global sinon, describe, beforeEach, afterEach, it, expect, BackboneFactory, User, UserWithSchema, Post, PostWithSchema */
 describe("Backbone Factory", function() {
 
   describe("Defining and using Sequences", function(){
 
     beforeEach(function() {
-      var emailSequence = BackboneFactory.define_sequence('email', function(n){
-        return "person"+n+"@example.com"; 
+      this.emailSequence = BackboneFactory.define_sequence('email', function(n){
+        return "person"+n+"@example.com";
       });
     });
 
@@ -19,7 +20,7 @@ describe("Backbone Factory", function() {
 
     beforeEach(function() {
       var emailSequence = BackboneFactory.define_sequence('person_email', function(n){
-        return "person"+n+"@example.com"; 
+        return "person"+n+"@example.com";
       });
       var postFactory = BackboneFactory.define('post', Post, function(){
                                           return {
@@ -38,19 +39,19 @@ describe("Backbone Factory", function() {
       this.postObject = BackboneFactory.create('post');
       this.userObject = BackboneFactory.create('user');
     });
-    
+
 
     it("return an instance of the Backbone Object requested", function() {
       expect(this.postObject instanceof Post).toBeTruthy();
       expect(this.userObject instanceof User).toBeTruthy();
     });
-          
+
     // Not sure if this test is needed. But what the hell!
     it("should preserve the defaults if not overriden", function() {
       expect(this.postObject.get('title')).toBe('Default Title');
     });
 
-    
+
 
     it("should use the defaults supplied when creating objects", function() {
       expect(this.userObject.get('name')).toBe('Backbone User');
@@ -63,8 +64,8 @@ describe("Backbone Factory", function() {
     });
 
     it("should work if other factories are passed", function(){
-      expect(this.postObject.get('author') instanceof User).toBeTruthy(); 
-    })
+      expect(this.postObject.get('author') instanceof User).toBeTruthy();
+    });
 
     it("should override defaults if arguments are passed on creation", function(){
       var userWithEmail = BackboneFactory.create('user', function(){
@@ -84,13 +85,13 @@ describe("Backbone Factory", function() {
       var secondID = BackboneFactory.create('user').id;
       expect(secondID).toBe(firstID + 1);
     });
-    
+
     describe("Error Messages", function() {
 
       it("should throw an error if factory_name is not proper", function() {
         expect(function(){BackboneFactory.define('wrong name', Post)}).toThrow("Factory name should not contain spaces or other funky characters");
       });
-      
+
       it("should not throw an error if factory_name has a hyphen", function() {
         expect(function(){BackboneFactory.define('okay-name', Post)}).not.toThrow();
       });
@@ -102,10 +103,44 @@ describe("Backbone Factory", function() {
       it("should throw an error if you try to use an undefined sequence", function() {
         expect(function(){BackboneFactory.next('undefined_sequence')}).toThrow("Sequence with name undefined_sequence does not exist");
       });
-      
-    });  
-    
-  });  
-  
-});        
 
+    });
+
+  });
+
+  describe("Defining and using Factories with Schema", function() {
+
+    beforeEach(function() {
+      var emailSequence = BackboneFactory.define_sequence('person_email', function(n){
+        return "person"+n+"@example.com";
+      });
+      var postFactory = BackboneFactory.define('post_with_schema', PostWithSchema );
+      var userFactory = BackboneFactory.define('user_with_schema', UserWithSchema, function() {
+        return {
+          email: BackboneFactory.next('person_email')
+        };
+      });
+      this.postObject = BackboneFactory.create('post_with_schema');
+      this.userObject = BackboneFactory.create('user');
+    });
+
+
+    it ("should create model using schema if present", function() {
+      expect(this.userObject.get('name')).toEqual('Backbone User');
+    });
+
+    it ("should get email using sequence", function() {
+      expect(this.userObject.get('email')).toEqual('person1@example.com');
+    });
+
+    it ("defaults option should override default from schema", function() {
+      expect(this.postObject.get('title')).toEqual('Default Title');
+    });
+
+    it ("should fallback to schema.default", function() {
+      expect(this.postObject.get('body')).toEqual('Default body');
+    });
+
+  });
+
+});
