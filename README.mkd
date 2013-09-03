@@ -76,7 +76,7 @@ var email = BackboneFactory.next('email') // person1@example.com
 var userFactory = BackboneFactory.define('user', User, function(){
                                    return {
                                      name : 'Backbone User',
-                                     email: BackboneFactory.next('person_email')
+                                     email: BackboneFactory.next('email')
                                       };
                                     }
                                    );
