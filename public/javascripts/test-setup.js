@@ -48,6 +48,10 @@ var PostWithSchema = Backbone.Model.extend({
     body: {
       type: 'string',
       default: 'Default body'
+    },
+    author: {
+      type: 'related',
+      related_to: UserWithSchema
     }
   }
 

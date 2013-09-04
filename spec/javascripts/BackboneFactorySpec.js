@@ -120,25 +120,37 @@ describe("Backbone Factory", function() {
           email: BackboneFactory.next('person_email')
         };
       });
-      this.postObject = BackboneFactory.create('post_with_schema');
-      this.userObject = BackboneFactory.create('user');
     });
 
 
     it("should create model using schema if present", function() {
-      expect(this.userObject.get('name')).toEqual('Backbone User');
+      var user = BackboneFactory.create('user_with_schema');
+      expect(user.get('name')).toEqual('Backbone User');
     });
 
     it("should get email using sequence", function() {
-      expect(this.userObject.get('email')).toEqual('person1@example.com');
+      var user = BackboneFactory.create('user_with_schema');
+      expect(user.get('email')).toEqual('person1@example.com');
     });
 
     it("defaults option should override default from schema", function() {
-      expect(this.postObject.get('title')).toEqual('Default Title');
+      var post = BackboneFactory.create('post_with_schema');
+      expect(post.get('title')).toEqual('Default Title');
     });
 
     it("should fallback to schema.default", function() {
-      expect(this.postObject.get('body')).toEqual('Default body');
+      var post = BackboneFactory.create('post_with_schema');
+      expect(post.get('body')).toEqual('Default body');
+    });
+
+    it("should fallback to schema.default", function() {
+      var post = BackboneFactory.create('post_with_schema');
+      expect(post.get('body')).toEqual('Default body');
+    });
+
+    it("should create related object from schema", function() {
+      var post = BackboneFactory.create('post_with_schema');
+      expect(post.get('author') instanceof UserWithSchema).toBeTruthy();
     });
 
   });

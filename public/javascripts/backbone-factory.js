@@ -4,43 +4,62 @@
 // https://github.com/SupportBee/Backbone-Factory
 
 (function(){
+
+  function getFactoryName( constructor ) {
+    var keys = _.keys( BackboneFactory.klasses ),
+        values = _.values( BackboneFactory.klasses );
+    return keys[ values.indexOf( constructor ) ];
+  }
+
   window.BackboneFactory = {
 
     factories: {},
     sequences: {},
+    klasses: {},
 
     define: function(factory_name, klass, defaults){
-
-      var schema = klass.prototype.schema,
-          schema_defaults = {},
-          model_defaults;
 
       // Check for arguments' sanity
       if(factory_name.match(/[^\w-_]+/)){
         throw "Factory name should not contain spaces or other funky characters";
       }
 
-      model_defaults = _.result( klass.prototype, 'defaults' );
-
       if(defaults === undefined) defaults = function(){return {};}
 
-      if ( schema ) {
-        schema_defaults = _.object(
-          _( schema ).keys(),
-          _( schema ).chain()
-            .values()
-            .pluck( 'default' )
-            .value()
-        );
-      }
-
       // The object creator
+      this.klasses[factory_name] = klass;
       this.factories[factory_name] = function(options){
         if(options === undefined) options = function(){return {};};
+
+        var schema = klass.prototype.schema,
+            schema_defaults = {},
+            model_defaults,
+            related_attrs = {};
+
+        model_defaults = _.result(klass.prototype, 'defaults');
+
+        if ( schema ) {
+          schema_defaults = _.object(
+            _( schema ).keys(),
+            _( schema ).chain()
+              .values()
+              .pluck( 'default' )
+              .value()
+          );
+
+          _(schema).each(function(attr, key) {
+            if(attr.type == 'related' && attr.related_to) {
+              related_attrs[key] = BackboneFactory.create(
+                getFactoryName(attr.related_to)
+              );
+            }
+          });
+        }
+
         var attributes =  _.extend(
-          {},
           { id: BackboneFactory.next("_" + factory_name + "_id") },
           schema_defaults,
+          related_attrs,
           model_defaults,
           defaults.call(),
           options.call()
