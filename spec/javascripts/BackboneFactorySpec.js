@@ -1,4 +1,4 @@
-/*global sinon, describe, beforeEach, afterEach, it, expect, BackboneFactory, User, UserWithSchema, Post, PostWithSchema */
+/*global sinon, describe, beforeEach, afterEach, it, expect, BackboneFactory, User, UserWithSchema, Post, PostWithSchema, Comments */
 describe("Backbone Factory", function() {
 
   describe("Defining and using Sequences", function(){
@@ -111,15 +111,17 @@ describe("Backbone Factory", function() {
   describe("Defining and using Factories with Schema", function() {
 
     beforeEach(function() {
-      var emailSequence = BackboneFactory.define_sequence('person_email', function(n){
+      BackboneFactory.define_sequence('person_email', function(n){
         return "person"+n+"@example.com";
       });
-      var postFactory = BackboneFactory.define('post_with_schema', PostWithSchema );
-      var userFactory = BackboneFactory.define('user_with_schema', UserWithSchema, function() {
+      BackboneFactory.define_collection('comments', Comments, 3);
+      BackboneFactory.define('post_with_schema', PostWithSchema);
+      BackboneFactory.define('user_with_schema', UserWithSchema, function() {
         return {
           email: BackboneFactory.next('person_email')
         };
       });
+      BackboneFactory.define('comment', Comment );
     });
 
 
@@ -148,9 +150,50 @@ describe("Backbone Factory", function() {
       expect(post.get('body')).toEqual('Default body');
     });
 
-    it("should create related object from schema", function() {
+    it("should create related Model field from schema", function() {
       var post = BackboneFactory.create('post_with_schema');
       expect(post.get('author') instanceof UserWithSchema).toBeTruthy();
+    });
+
+    describe("Related Collection", function() {
+
+      it("should be created from schema", function() {
+        var post = BackboneFactory.create('post_with_schema');
+        expect(post.get('comments') instanceof Comments).toBeTruthy();
+      });
+
+      it("should be of default size if size not given", function() {
+        var post = BackboneFactory.create('post_with_schema');
+        expect(post.get('comments').size()).toEqual(3);
+      });
+
+      it("should be of default size if size is not valid number", function() {
+        var post = BackboneFactory.create('post_with_schema', function(){
+          return { comments: BackboneFactory.create_collection('comments', null) };
+        });
+        expect(post.get('comments').size()).toEqual(3);
+      });
+
+      it("should be of given size", function() {
+        var post = BackboneFactory.create('post_with_schema', function(){
+          return { comments: BackboneFactory.create_collection('comments', 4) };
+        });
+        expect(post.get('comments').size()).toEqual(4);
+      });
+
+      it("should contain models with given attributes", function() {
+        BackboneFactory.define_collection('comments', Comments, 3);
+        var user = BackboneFactory.create('user_with_schema');
+        var post = BackboneFactory.create('post_with_schema', function(){
+          return { comments: BackboneFactory.create_collection('comments', null, function() {
+            return { author: user };
+          }) };
+        });
+        expect(_.every(post.get('comments').pluck('author'), function(val) {
+          return val === user;
+        })).toBeTruthy();
+      });
+
     });
 
   });

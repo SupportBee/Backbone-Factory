@@ -5,17 +5,27 @@
 
 (function(){
 
-  function getFactoryName( constructor ) {
-    var keys = _.keys( BackboneFactory.klasses ),
-        values = _.values( BackboneFactory.klasses );
-    return keys[ values.indexOf( constructor ) ];
+  function get_factory_name(klass){
+    var keys = _.keys(BackboneFactory.model_klasses),
+        values = _.values(BackboneFactory.model_klasses);
+    return keys[values.indexOf(klass)];
+  }
+
+  function get_collection_name(klass){
+    var keys = _.keys(BackboneFactory.collection_klasses),
+        values = _.values(BackboneFactory.collection_klasses);
+    return keys[values.indexOf(klass)];
   }
 
   window.BackboneFactory = {
 
     factories: {},
+    model_klasses: {},
+
+    collections: {},
+    collection_klasses: {},
+
     sequences: {},
-    klasses: {},
 
     define: function(factory_name, klass, defaults){
 
@@ -27,9 +37,9 @@
       if(defaults === undefined) defaults = function(){return {};}
 
       // The object creator
-      this.klasses[factory_name] = klass;
-      this.factories[factory_name] = function(options){
-        if(options === undefined) options = function(){return {};};
+      this.model_klasses[factory_name] = klass;
+      this.factories[factory_name] = function(attrs_generator, options){
+        if(attrs_generator === undefined) attrs_generator = function(){return {};};
 
         var schema = klass.prototype.schema,
             schema_defaults = {},
@@ -48,10 +58,15 @@
           );
 
           _(schema).each(function(attr, key) {
+            var name;
             if(attr.type == 'related' && attr.related_to) {
-              related_attrs[key] = BackboneFactory.create(
-                getFactoryName(attr.related_to)
-              );
+              name = get_factory_name(attr.related_to);
+              if(name){
+                related_attrs[key] = BackboneFactory.create(name);
+              }else{
+                name = get_collection_name(attr.related_to);
+                related_attrs[key] = BackboneFactory.create_collection(name);
+              }
             }
           });
         }
@@ -62,9 +77,9 @@
           related_attrs,
           model_defaults,
           defaults.call(),
-          options.call()
+          attrs_generator.call()
         );
-        return new klass(attributes);
+        return new klass(attributes, options);
       };
 
       // Lets define a sequence for id
@@ -73,11 +88,11 @@
       });
     },
 
-    create: function(factory_name, options){
+    create: function(factory_name, attrs_generator, options){
       if(this.factories[factory_name] === undefined){
         throw "Factory with name " + factory_name + " does not exist";
       }
-      return this.factories[factory_name].apply(null, [options]);
+      return this.factories[factory_name].call(null, attrs_generator, options);
     },
 
     define_sequence: function(sequence_name, callback){
@@ -92,6 +107,30 @@
       }
       this.sequences[sequence_name]['counter'] += 1;
       return this.sequences[sequence_name]['callback'].apply(null, [this.sequences[sequence_name]['counter']]); //= callback;
+    },
+
+    define_collection: function(collection_name, klass, default_size, default_options) {
+      var factory_name = get_factory_name(klass.prototype.model);
+
+      this.collection_klasses[collection_name] = klass;
+      this.collections[collection_name] = function(size, attrs_generator, options) {
+        var models = [];
+        if(typeof size!='number') size = default_size;
+        options = options || default_options || {};
+
+        for(var i=0; i<size; i++) {
+          models.push(BackboneFactory.create(factory_name, attrs_generator));
+        }
+        return new klass(models, options);
+      };
+    },
+
+    create_collection: function(collection_name, size, attrs_generator, options){
+      if(this.collections[collection_name] === undefined){
+        throw "Collection with name " + collection_name + " does not exist";
+      }
+      return this.collections[collection_name].call(this, size, attrs_generator, options);
     }
+
   };
 })();

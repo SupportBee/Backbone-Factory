@@ -34,6 +34,25 @@ var Post = Backbone.Model.extend({
 });
 
 
+var Comment = Backbone.Model.extend({
+
+  schema: {
+    msg: {
+      type: 'string',
+      default: 'Default comment msg'
+    }
+  }
+
+});
+
+
+var Comments = Backbone.Collection.extend({
+
+  model: Comment
+
+});
+
+
 var PostWithSchema = Backbone.Model.extend({
 
   defaults: {
@@ -52,6 +71,10 @@ var PostWithSchema = Backbone.Model.extend({
     author: {
       type: 'related',
       related_to: UserWithSchema
+    },
+    comments: {
+      type: 'related',
+      related_to: Comments
     }
   }
 
