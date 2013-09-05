@@ -1,0 +1,11 @@
+{
+    "framework": "jasmine",
+    "launch_in_dev": ["PhantomJS"],
+    "src_files": [
+        "public/javascripts/underscore-min.js",
+        "public/javascripts/backbone-min.js",
+        "public/javascripts/test-setup.js",
+        "public/javascripts/backbone-factory.js",
+        "spec/javascripts/BackboneFactorySpec.js"
+    ]
+}
