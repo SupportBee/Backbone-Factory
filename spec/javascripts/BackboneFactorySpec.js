@@ -161,6 +161,12 @@ describe("Backbone Factory", function() {
         expect(post.get('author_without_schema') instanceof User).toBeTruthy();
       });
 
+      it("should work even when there are multiple factories for the same constructor", function(){
+        BackboneFactory.define('another_user_with_schema', UserWithSchema);
+        var post = BackboneFactory.create('post_with_schema');
+        expect(post.get('author') instanceof UserWithSchema).toBeTruthy();
+      });
+
     });
 
     describe("Related Collection", function() {
