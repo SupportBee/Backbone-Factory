@@ -60,12 +60,12 @@
           _(schema).each(function(attr, key){
             var name;
             if(attr.type == 'related' && attr.related_to){
-              name = get_factory_name(attr.related_to);
-              if(name){
+              if(name = get_factory_name(attr.related_to)){
                 related_attrs[key] = BackboneFactory.create(name);
-              }else{
-                name = get_collection_name(attr.related_to);
+              }else if(name = get_collection_name(attr.related_to)){
                 related_attrs[key] = BackboneFactory.create_collection(name);
+              }else{
+                related_attrs[key] = new attr.related_to();
               }
             }
           });

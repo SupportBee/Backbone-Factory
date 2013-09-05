@@ -40,6 +40,10 @@ var Comment = Backbone.Model.extend({
     msg: {
       type: 'string',
       default: 'Default comment msg'
+    },
+    author: {
+      type: 'related',
+      related_to: User
     }
   }
 

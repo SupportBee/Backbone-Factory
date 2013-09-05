@@ -167,6 +167,20 @@ describe("Backbone Factory", function() {
         expect(post.get('author') instanceof UserWithSchema).toBeTruthy();
       });
 
+      it("should be created even if there is no factory", function() {
+        var CommentCopy = Comment;
+        CommentCopy.prototype.schema = _.extend(Comment.prototype.schema, {
+          author: {
+            type: 'related',
+            related_to: Backbone.Model
+          }
+        });
+        BackboneFactory.define('comment', CommentCopy);
+        var comment = BackboneFactory.create('comment');
+        expect(comment.get('author') instanceof Backbone.Model).toBeTruthy();
+        expect(comment.get('author') instanceof User).toBeFalsy();
+      });
+
     });
 
     describe("Related Collection", function() {
@@ -206,6 +220,20 @@ describe("Backbone Factory", function() {
         expect(_.every(post.get('comments').pluck('author'), function(val) {
           return val === user;
         })).toBeTruthy();
+      });
+
+      it("should be created even if there is no factory", function() {
+        var PostCopy = PostWithSchema;
+        PostCopy.prototype.schema = _.extend(PostWithSchema.prototype.schema, {
+          comments: {
+            type: 'related',
+            related_to: Backbone.Collection
+          }
+        });
+        BackboneFactory.define('post', PostCopy);
+        var post = BackboneFactory.create('post');
+        expect(post.get('comments') instanceof Backbone.Collection).toBeTruthy();
+        expect(post.get('comments') instanceof Comments).toBeFalsy();
       });
 
     });
