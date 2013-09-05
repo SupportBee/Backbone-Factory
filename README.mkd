@@ -4,15 +4,15 @@ Backbone Factory
 Introduction
 ------------
 
-Backbone Factory is a small javascript library for creating [Backbone.js](http://documentcloud.github.com/backbone/) objects for testing your code. It has no external dependency. 
+Backbone Factory is a small javascript library for creating [Backbone.js](http://documentcloud.github.com/backbone/) objects for testing your code. It has no external dependency.
 
-The API is heavily inspired by the awesome [Factory Girl](https://github.com/thoughtbot/factory_girl). 
+The API is heavily inspired by the awesome [Factory Girl](https://github.com/thoughtbot/factory_girl).
 
 
 Installation
 ------------
 
-To use it, just [download](https://github.com/SupportBee/Backbone-Factory/raw/master/public/javascripts/backbone-factory.js) the file and include it in your testing setup.  
+To use it, just [download](https://github.com/SupportBee/Backbone-Factory/raw/master/public/javascripts/backbone-factory.js) the file and include it in your testing setup.
 Usage
 -----
 
@@ -46,7 +46,7 @@ var userFactory = BackboneFactory.define('user', User);
 
 ### Using Factories
 
-To use these factories, 
+To use these factories,
 
 ```javscript
 this.postObject = BackboneFactory.create('post');
@@ -56,11 +56,11 @@ this.userObject = BackboneFactory.create('user');
 This will create objects using the [defaults](http://documentcloud.github.com/backbone/#Model-defaults) you have in your class definitions.
 
 
-### Defining Sequences 
+### Defining Sequences
 
 ```javascript
 var emailSequence = BackboneFactory.define_sequence('email', function(n){
-        return "person"+n+"@example.com"; 
+        return "person"+n+"@example.com";
       });
 ```
 
@@ -129,7 +129,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-

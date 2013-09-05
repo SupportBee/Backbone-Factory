@@ -48,18 +48,18 @@
 
         model_defaults = _.result(klass.prototype, 'defaults');
 
-        if ( schema ) {
+        if(schema){
           schema_defaults = _.object(
-            _( schema ).keys(),
-            _( schema ).chain()
+            _(schema).keys(),
+            _(schema).chain()
               .values()
-              .pluck( 'default' )
+              .pluck('default')
               .value()
           );
 
-          _(schema).each(function(attr, key) {
+          _(schema).each(function(attr, key){
             var name;
-            if(attr.type == 'related' && attr.related_to) {
+            if(attr.type == 'related' && attr.related_to){
               name = get_factory_name(attr.related_to);
               if(name){
                 related_attrs[key] = BackboneFactory.create(name);
@@ -109,16 +109,16 @@
       return this.sequences[sequence_name]['callback'].apply(null, [this.sequences[sequence_name]['counter']]); //= callback;
     },
 
-    define_collection: function(collection_name, klass, default_size, default_options) {
+    define_collection: function(collection_name, klass, default_size, default_options){
       var factory_name = get_factory_name(klass.prototype.model);
 
       this.collection_klasses[collection_name] = klass;
-      this.collections[collection_name] = function(size, attrs_generator, options) {
+      this.collections[collection_name] = function(size, attrs_generator, options){
         var models = [];
         if(typeof size!='number') size = default_size;
         options = options || default_options || {};
 
-        for(var i=0; i<size; i++) {
+        for(var i=0; i<size; i++){
           models.push(BackboneFactory.create(factory_name, attrs_generator));
         }
         return new klass(models, options);
