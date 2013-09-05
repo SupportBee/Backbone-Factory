@@ -150,10 +150,18 @@ describe("Backbone Factory", function() {
       expect(post.get('body')).toEqual('Default body');
     });
 
-    it("should create related Model field from schema", function() {
-      var post = BackboneFactory.create('post_with_schema');
-      expect(post.get('author') instanceof UserWithSchema).toBeTruthy();
+    describe("Related Model", function(){
+      it("should create related Model field from schema", function() {
+        var post = BackboneFactory.create('post_with_schema');
+        expect(post.get('author') instanceof UserWithSchema).toBeTruthy();
+      });
     });
+
+    it("should create related Model that has no schema", function() {
+      var post = BackboneFactory.create('post_with_schema');
+      expect(post.get('author_without_schema') instanceof User).toBeTruthy();
+    });
+
 
     describe("Related Collection", function() {
 
