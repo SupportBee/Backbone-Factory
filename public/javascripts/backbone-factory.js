@@ -59,16 +59,17 @@
 
           _(schema).each(function(attr, key){
             var name;
-            if(attr.type == 'related' && attr.related_to){
-              if(name = get_factory_name(attr.related_to)){
+            if(attr.type == 'related' && attr.constructor){
+              if(name = get_factory_name(attr.constructor)){
                 related_attrs[key] = BackboneFactory.create(name);
-              }else if(name = get_collection_name(attr.related_to)){
+              }else if(name = get_collection_name(attr.constructor)){
                 related_attrs[key] = BackboneFactory.create_collection(name);
               }else{
-                related_attrs[key] = new attr.related_to();
+                related_attrs[key] = new attr.constructor();
               }
             }
           });
+
         }
 
         var attributes =  _.extend(

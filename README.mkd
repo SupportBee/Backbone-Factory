@@ -106,7 +106,7 @@ var PostWithSchema = Backbone.Model.extend({
     },
     author: {
       type: 'related',
-      related_to: User
+      constructor: User
     }
   }
 
@@ -156,11 +156,11 @@ var PostWithSchema = Backbone.Model.extend({
     },
     author: {
       type: 'related',
-      related_to: User
+      constructor: User
     }
     comments: {
       type: 'related',
-      related_to: Comments
+      constructor: Comments
     }
   }
 });
