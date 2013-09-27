@@ -172,7 +172,7 @@ describe("Backbone Factory", function() {
         CommentCopy.prototype.schema = _.extend(Comment.prototype.schema, {
           author: {
             type: 'related',
-            constructor: Backbone.Model
+            _constructor: Backbone.Model
           }
         });
         BackboneFactory.define('comment', CommentCopy);
@@ -227,7 +227,7 @@ describe("Backbone Factory", function() {
         PostCopy.prototype.schema = _.extend(PostWithSchema.prototype.schema, {
           comments: {
             type: 'related',
-            constructor: Backbone.Collection
+            _constructor: Backbone.Collection
           }
         });
         BackboneFactory.define('post', PostCopy);

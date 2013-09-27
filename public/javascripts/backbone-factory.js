@@ -59,13 +59,13 @@
 
           _(schema).each(function(attr, key){
             var name;
-            if(attr.type == 'related' && attr.constructor){
-              if(name = get_factory_name(attr.constructor)){
+            if(attr.type == 'related' && attr._constructor){
+              if(name = get_factory_name(attr._constructor)){
                 related_attrs[key] = BackboneFactory.create(name);
-              }else if(name = get_collection_name(attr.constructor)){
+              }else if(name = get_collection_name(attr._constructor)){
                 related_attrs[key] = BackboneFactory.create_collection(name);
               }else{
-                related_attrs[key] = new attr.constructor();
+                related_attrs[key] = new attr._constructor();
               }
             }
           });

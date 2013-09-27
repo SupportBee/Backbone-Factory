@@ -74,15 +74,15 @@ var PostWithSchema = Backbone.Model.extend({
     },
     author: {
       type: 'related',
-      constructor: UserWithSchema
+      _constructor: UserWithSchema
     },
     author_without_schema: {
       type: 'related',
-      constructor: User
+      _constructor: User
     },
     comments: {
       type: 'related',
-      constructor: Comments
+      _constructor: Comments
     }
   }
 
