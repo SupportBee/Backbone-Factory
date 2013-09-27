@@ -42,30 +42,26 @@
         if(attrs_generator === undefined) attrs_generator = function(){return {};};
 
         var schema = klass.prototype.schema,
-            schema_defaults = {},
-            model_defaults,
-            related_attrs = {};
-
-        model_defaults = _.result(klass.prototype, 'defaults');
+            default_vals = _.result(klass.prototype, 'defaults') || {};
 
         if(schema){
-          schema_defaults = _.object(
-            _(schema).keys(),
-            _(schema).chain()
-              .values()
-              .pluck('default')
-              .value()
-          );
+          default_vals = _(default_vals).clone();
+
+          _(schema).each(function(attr, key){
+            if(_(attr).has('default') && default_vals[key] === undefined) {
+              default_vals[key] = attr.default;
+            }
+          });
 
           _(schema).each(function(attr, key){
             var name;
-            if(attr.type == 'related' && attr._constructor){
+            if(attr.type == 'related' && attr._constructor && !(key in default_vals)){
               if(name = get_factory_name(attr._constructor)){
-                related_attrs[key] = BackboneFactory.create(name);
+                default_vals[key] = BackboneFactory.create(name);
               }else if(name = get_collection_name(attr._constructor)){
-                related_attrs[key] = BackboneFactory.create_collection(name);
+                default_vals[key] = BackboneFactory.create_collection(name);
               }else{
-                related_attrs[key] = new attr._constructor();
+                default_vals[key] = new attr._constructor();
               }
             }
           });
@@ -74,9 +70,7 @@
 
         var attributes =  _.extend(
           { id: BackboneFactory.next("_" + factory_name + "_id") },
-          schema_defaults,
-          related_attrs,
-          model_defaults,
+          default_vals,
           defaults.call(),
           attrs_generator.call()
         );

@@ -43,7 +43,7 @@ var Comment = Backbone.Model.extend({
     },
     author: {
       type: 'related',
-      related_to: User
+      _constructor: User
     }
   }
 

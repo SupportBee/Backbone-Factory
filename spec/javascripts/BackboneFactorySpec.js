@@ -1,6 +1,14 @@
 /*global sinon, describe, beforeEach, afterEach, it, expect, BackboneFactory, User, UserWithSchema, Post, PostWithSchema, Comments */
 describe("Backbone Factory", function() {
 
+  beforeEach(function() {
+    this.addMatchers({
+      toBeInstanceOf: function(expected) {
+        return this.actual instanceof expected;
+      }
+    });
+  });
+
   describe("Defining and using Sequences", function(){
 
     beforeEach(function() {
@@ -42,8 +50,8 @@ describe("Backbone Factory", function() {
 
 
     it("return an instance of the Backbone Object requested", function() {
-      expect(this.postObject instanceof Post).toBeTruthy();
-      expect(this.userObject instanceof User).toBeTruthy();
+      expect(this.postObject).toBeInstanceOf(Post);
+      expect(this.userObject).toBeInstanceOf(User);
     });
 
     // Not sure if this test is needed. But what the hell!
@@ -64,7 +72,7 @@ describe("Backbone Factory", function() {
     });
 
     it("should work if other factories are passed", function(){
-      expect(this.postObject.get('author') instanceof User).toBeTruthy();
+      expect(this.postObject.get('author')).toBeInstanceOf(User);
     });
 
     it("should override defaults if arguments are passed on creation", function(){
@@ -153,32 +161,33 @@ describe("Backbone Factory", function() {
     describe("Related Model", function(){
       it("should be created from schema if exists", function() {
         var post = BackboneFactory.create('post_with_schema');
-        expect(post.get('author') instanceof UserWithSchema).toBeTruthy();
+        expect(post.get('author')).toBeInstanceOf(UserWithSchema);
       });
 
       it("should be created from schema even the related model has no schema", function() {
         var post = BackboneFactory.create('post_with_schema');
-        expect(post.get('author_without_schema') instanceof User).toBeTruthy();
+        expect(post.get('author_without_schema')).toBeInstanceOf(User);
       });
 
       it("should work even when there are multiple factories for the same constructor", function(){
         BackboneFactory.define('another_user_with_schema', UserWithSchema);
         var post = BackboneFactory.create('post_with_schema');
-        expect(post.get('author') instanceof UserWithSchema).toBeTruthy();
+        expect(post.get('author')).toBeInstanceOf(UserWithSchema);
       });
 
       it("should be created even if there is no factory", function() {
-        var CommentCopy = Comment;
-        CommentCopy.prototype.schema = _.extend(Comment.prototype.schema, {
-          author: {
-            type: 'related',
-            _constructor: Backbone.Model
-          }
+        var CommentCopy = Comment.extend({
+          schema: _.extend({}, Comment.prototype.schema, {
+            author: {
+              type: 'related',
+              _constructor: Backbone.Model
+            }
+          })
         });
-        BackboneFactory.define('comment', CommentCopy);
-        var comment = BackboneFactory.create('comment');
-        expect(comment.get('author') instanceof Backbone.Model).toBeTruthy();
-        expect(comment.get('author') instanceof User).toBeFalsy();
+        BackboneFactory.define('comment_copy', CommentCopy);
+        var comment = BackboneFactory.create('comment_copy');
+        expect(comment.get('author')).toBeInstanceOf(Backbone.Model);
+        expect(comment.get('author')).not.toBeInstanceOf(User);
       });
 
     });
@@ -187,7 +196,7 @@ describe("Backbone Factory", function() {
 
       it("should be created from schema", function() {
         var post = BackboneFactory.create('post_with_schema');
-        expect(post.get('comments') instanceof Comments).toBeTruthy();
+        expect(post.get('comments')).toBeInstanceOf(Comments);
       });
 
       it("should be of default size if size not given", function() {
@@ -232,8 +241,8 @@ describe("Backbone Factory", function() {
         });
         BackboneFactory.define('post', PostCopy);
         var post = BackboneFactory.create('post');
-        expect(post.get('comments') instanceof Backbone.Collection).toBeTruthy();
-        expect(post.get('comments') instanceof Comments).toBeFalsy();
+        expect(post.get('comments')).toBeInstanceOf(Backbone.Collection);
+        expect(post.get('comments')).not.toBeInstanceOf(Comments);
       });
 
     });
