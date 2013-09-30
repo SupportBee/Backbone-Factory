@@ -94,6 +94,19 @@ describe("Backbone Factory", function() {
       expect(secondID).toBe(firstID + 1);
     });
 
+
+    describe("create collection", function() {
+
+      it("should create models with back-reference to collection", function() {
+        BackboneFactory.define('comment', Comment);
+        BackboneFactory.define_collection('comments', Comments, 2);
+        var collection = BackboneFactory.create_collection('comments');
+        expect(collection.at(0).collection).toBe(collection);
+      });
+
+    });
+
+
     describe("Error Messages", function() {
 
       it("should throw an error if factory_name is not proper", function() {
