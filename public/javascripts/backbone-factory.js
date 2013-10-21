@@ -8,6 +8,9 @@
     sequences: {},
 
     define: function(factory_name, klass, defaults){
+      if (!klass) {
+        throw "Factory model is not defined";
+      }
 
       // Check for arguments' sanity
       if(factory_name.match(/[^\w-_]+/)){

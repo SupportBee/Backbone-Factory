@@ -86,6 +86,9 @@ describe("Backbone Factory", function() {
     });
     
     describe("Error Messages", function() {
+      it("should throw an error if factory_name is not proper", function() {
+        expect(function(){BackboneFactory.define('foo', FooModel)}).toThrow("Factory model is not defined");
+      });
 
       it("should throw an error if factory_name is not proper", function() {
         expect(function(){BackboneFactory.define('wrong name', Post)}).toThrow("Factory name should not contain spaces or other funky characters");
