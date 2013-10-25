@@ -1,7 +1,7 @@
 /*global BackboneFactory */
 
 // Backbone Factory JS
-// https://github.com/SupportBee/Backbone-Factory
+// https://github.com/Aplopio/Backbone-Factory
 
 (function(){
 

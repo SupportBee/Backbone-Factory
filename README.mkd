@@ -16,7 +16,7 @@ To use it, just [download](https://github.com/recruiterbox/Backbone-Factory/raw/
 Usage
 -----
 
-Lets say you have two Backbone models, Post and User
+Let's say you have two Backbone models - Post and User
 
 ```javascript
 var User = Backbone.Model.extend({
@@ -62,8 +62,8 @@ var userObject = BackboneFactory.create('user', function(){
     return {
         name: "Custom Name",
         email: "custom@email.com"
-        };
-    });
+    };
+});
 ```
 
 ### Defining and using Collections
@@ -79,10 +79,10 @@ var Users = Backbone.Collection.extend({
 });
 
 BackboneFactory.define_collection('posts', Posts, 3); //Third arugement is the default size of the collection
-BackboneFactory.define_collection('users', Users, 4); 
+BackboneFactory.define_collection('users', Users, 4);
 
-var postsCollection = BackboneFactory.create('posts'); //Creates 3 posts
-var usersCollection = BackboneFactory.create('users',2) //Creates only 2 users overriding the default of 4
+var postsCollection = BackboneFactory.create_collection('posts'); //Creates 3 posts
+var usersCollection = BackboneFactory.create_collection('users',2) //Creates only 2 users overriding the default of 4
 
 ```
 
@@ -106,7 +106,7 @@ var PostWithSchema = Backbone.Model.extend({
     },
     author: {
       type: 'related',
-      constructor: User
+      _constructor: User
     }
   }
 
@@ -124,7 +124,7 @@ var author = post.get('author');
 console.log(author.get('name'); //Raghu
 
 ```
-Cool! isn't it? If defaults and schema are both present, default values from the backbone model take precedence over the scheme defaults.
+Cool! isn't it? If defaults and schema are both present, default values from the backbone model take precedence over the schema defaults.
 Now, lets complicate this a bit further.
 
 ```javascript
@@ -156,11 +156,11 @@ var PostWithSchema = Backbone.Model.extend({
     },
     author: {
       type: 'related',
-      constructor: User
+      _constructor: User
     }
     comments: {
       type: 'related',
-      constructor: Comments
+      _constructor: Comments
     }
   }
 });
@@ -171,15 +171,16 @@ BackboneFactory.define('comments', Comments, 2);
 
 var post = BackboneFactory.create('post_with_schema');
 var comments = post.get('comments');
-console.log(comments.size()) //gives a value of 2
+console.log(comments.length) //gives a value of 2
 ```
 Its very easy to change the size of the collection of comments
 
 ```javascript
 var post = BackboneFactory.create('post_with_schema', function(){
-              return { comments: BackboneFactory.create_collection('comments', 4) });
+    return { comments: BackboneFactory.create_collection('comments', 4) };
+});
 var comments = post.get('comments');
-console.log(comments.size()) //gives a value of 4
+console.log(comments.length) //gives a value of 4
 
 ```
 If a comments BackboneFactory is not defined, an empty collection of comments is created when a post is created.
@@ -188,8 +189,8 @@ If a comments BackboneFactory is not defined, an empty collection of comments is
 Often, we'd like to generate unique values for model attributes when new objects are created. For example, we may want the username/email of a user to be always unique. We can use sequences for this.
 ```javascript
 BackboneFactory.define_sequence('email', function(n){
-        return "person"+n+"@example.com"; 
-      });
+    return "person"+n+"@example.com";
+});
 
 var email = BackboneFactory.next('email') // person1@example.com
 ```
@@ -198,12 +199,11 @@ var email = BackboneFactory.next('email') // person1@example.com
 
 ```javascript
 BackboneFactory.define('user', User, function(){
-                                   return {
-                                     name : 'Backbone User',
-                                     email: BackboneFactory.next('email')
-                                      };
-                                    }
-                                   );
+    return {
+        name : 'Backbone User',
+        email: BackboneFactory.next('email')
+    };
+});
 var user = BackboneFactory.create('user);
 console.log(user.get('email') // person2@example.com
 ```
