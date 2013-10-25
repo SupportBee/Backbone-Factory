@@ -4,25 +4,27 @@ Backbone Factory
 Introduction
 ------------
 
-Backbone Factory is a small javascript library for creating [Backbone.js](http://documentcloud.github.com/backbone/) objects for testing your code. It has no external dependency. 
+Backbone Factory is a small javascript library for creating [Backbone.js](http://documentcloud.github.com/backbone/) objects for testing your code. We have extended [this](https://github.com/SupportBee/Backbone-Factory) library to provide support from nested models/collections. This is a strict superset of the original authors functionality. It has no external dependency.
 
-The API is heavily inspired by the awesome [Factory Girl](https://github.com/thoughtbot/factory_girl). 
+The API is heavily inspired by the awesome [Factory Girl](https://github.com/thoughtbot/factory_girl).
 
 
 Installation
 ------------
 
-To use it, just [download](https://github.com/SupportBee/Backbone-Factory/raw/master/public/javascripts/backbone-factory.js) the file and include it in your testing setup.  
+To use it, just [download](https://github.com/recruiterbox/Backbone-Factory/raw/master/public/javascripts/backbone-factory.js) the file and include it in your testing setup.
 Usage
 -----
 
-Lets say you have two Backbone models, Post and User
+Let's say you have two Backbone models - Post and User
 
 ```javascript
 var User = Backbone.Model.extend({
 
-  name: null,
-  email: null
+  defaults: {
+    name: 'Raghu',
+    email: 'raghu@example.com'
+  }
 
 });
 
@@ -40,57 +42,171 @@ var Post = Backbone.Model.extend({
 To define factories for them
 
 ```javascript
-var postFactory = BackboneFactory.define('post', Post);
-var userFactory = BackboneFactory.define('user', User);
+BackboneFactory.define('post', Post);
+BackboneFactory.define('user', User);
 ```
 
 ### Using Factories
 
-To use these factories, 
-
-```javscript
-this.postObject = BackboneFactory.create('post');
-this.userObject = BackboneFactory.create('user');
-```
-
-This will create objects using the [defaults](http://documentcloud.github.com/backbone/#Model-defaults) you have in your class definitions.
-
-
-### Defining Sequences 
+To use these factories,
 
 ```javascript
-var emailSequence = BackboneFactory.define_sequence('email', function(n){
-        return "person"+n+"@example.com"; 
-      });
+var postObject = BackboneFactory.create('post');
+var userObject = BackboneFactory.create('user');
 ```
 
-### Using Sequences
+This will create objects using the [defaults](http://documentcloud.github.com/backbone/#Model-defaults) you have in your class definitions. It is easy to override the defaults when creating an object
+```javascript
+
+var userObject = BackboneFactory.create('user', function(){
+    return {
+        name: "Custom Name",
+        email: "custom@email.com"
+    };
+});
+```
+
+### Defining and using Collections
+
+To define factories for collections
 
 ```javascript
+var Posts = Backbone.Collection.extend({
+      model: Post
+});
+var Users = Backbone.Collection.extend({
+      model: User
+});
+
+BackboneFactory.define_collection('posts', Posts, 3); //Third arugement is the default size of the collection
+BackboneFactory.define_collection('users', Users, 4);
+
+var postsCollection = BackboneFactory.create_collection('posts'); //Creates 3 posts
+var usersCollection = BackboneFactory.create_collection('users',2) //Creates only 2 users overriding the default of 4
+
+```
+
+
+### Schema Support
+
+If your backbone models define a schema, it is used to set default values. Nested models are also supported.
+
+```javascript
+
+var PostWithSchema = Backbone.Model.extend({
+
+  schema: {
+    title: {
+      type: 'string',
+      default: 'Default value from schema'
+    },
+    body: {
+      type: 'string',
+      default: 'Default body'
+    },
+    author: {
+      type: 'related',
+      _constructor: User
+    }
+  }
+
+});
+
+
+BackboneFactory.define('post_with_schema', PostWithSchema);
+var post = BackboneFactory.create('post_with_schema');
+
+//Post title will be picked up from schema
+console.log(post.get('title'); //Default value from schema
+
+//Author was created automatically using the schema
+var author = post.get('author');
+console.log(author.get('name'); //Raghu
+
+```
+Cool! isn't it? If defaults and schema are both present, default values from the backbone model take precedence over the schema defaults.
+Now, lets complicate this a bit further.
+
+```javascript
+var Comment = Backbone.Model.extend({
+
+  schema: {
+    msg: {
+      type: 'string',
+      default: 'Default comment msg'
+    }
+  }
+
+});
+
+var Comments = Backbone.Collection.extend({
+  model: Comment
+});
+
+var PostWithSchema = Backbone.Model.extend({
+
+  schema: {
+    title: {
+      type: 'string',
+      default: 'Default value from schema'
+    },
+    body: {
+      type: 'string',
+      default: 'Default body'
+    },
+    author: {
+      type: 'related',
+      _constructor: User
+    }
+    comments: {
+      type: 'related',
+      _constructor: Comments
+    }
+  }
+});
+
+
+BackboneFactory.define('post_with_schema', PostWithSchema);
+BackboneFactory.define('comments', Comments, 2);
+
+var post = BackboneFactory.create('post_with_schema');
+var comments = post.get('comments');
+console.log(comments.length) //gives a value of 2
+```
+Its very easy to change the size of the collection of comments
+
+```javascript
+var post = BackboneFactory.create('post_with_schema', function(){
+    return { comments: BackboneFactory.create_collection('comments', 4) };
+});
+var comments = post.get('comments');
+console.log(comments.length) //gives a value of 4
+
+```
+If a comments BackboneFactory is not defined, an empty collection of comments is created when a post is created.
+
+### Dynamically generating attribute values: Sequences
+Often, we'd like to generate unique values for model attributes when new objects are created. For example, we may want the username/email of a user to be always unique. We can use sequences for this.
+```javascript
+BackboneFactory.define_sequence('email', function(n){
+    return "person"+n+"@example.com";
+});
+
 var email = BackboneFactory.next('email') // person1@example.com
 ```
 
-### Defining Factories with defaults
+### Defining Factories with Sequences
 
 ```javascript
-var userFactory = BackboneFactory.define('user', User, function(){
-                                   return {
-                                     name : 'Backbone User',
-                                     email: BackboneFactory.next('person_email')
-                                      };
-                                    }
-                                   );
+BackboneFactory.define('user', User, function(){
+    return {
+        name : 'Backbone User',
+        email: BackboneFactory.next('email')
+    };
+});
+var user = BackboneFactory.create('user);
+console.log(user.get('email') // person2@example.com
 ```
-
-### Overriding defaults when creating objects
-
-```javascript
-var userWithEmail = BackboneFactory.create('user', function(){
-                                             return {
-                                                email: 'overriden@example.com'
-                                              };
-                            });
- ```
 
 Contributing
 ------------
@@ -129,7 +245,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-
