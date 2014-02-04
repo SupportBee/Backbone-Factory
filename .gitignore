@@ -6,6 +6,7 @@ config/database.yml
 tmp/*
 doc/api
 doc/app
+*.rvmrc
 *.swp
 *.swo
 *.un~
