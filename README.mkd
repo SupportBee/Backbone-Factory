@@ -1,37 +1,32 @@
-Backbone Factory
-================
+# Backbone Factory
 
-Introduction
-------------
+
+## Introduction
 
 Backbone Factory is a small javascript library for creating [Backbone.js](http://documentcloud.github.com/backbone/) objects for testing your code. It has no external dependency. 
 
-The API is heavily inspired by the awesome [Factory Girl](https://github.com/thoughtbot/factory_girl). 
+The API is heavily inspired by the awesome [Factory Girl](https://github.com/thoughtbot/factory_girl).
 
+## Installation
 
-Installation
-------------
+To use it, just [download](https://github.com/SupportBee/Backbone-Factory/raw/master/public/javascripts/backbone-factory.js) the file and include it in your testing setup.
 
-To use it, just [download](https://github.com/SupportBee/Backbone-Factory/raw/master/public/javascripts/backbone-factory.js) the file and include it in your testing setup.  
-Usage
------
+## Usage
 
 Lets say you have two Backbone models, Post and User
 
 ```javascript
 var User = Backbone.Model.extend({
-
-  name: null,
-  email: null
-
+  defaults: {
+    name: null,
+    email: null
+  }
 });
 
 var Post = Backbone.Model.extend({
-
   defaults: {
     title: 'Default Title'
   }
-
 });
 ```
 
@@ -74,26 +69,37 @@ var email = BackboneFactory.next('email') // person1@example.com
 
 ```javascript
 var userFactory = BackboneFactory.define('user', User, function(){
-                                   return {
-                                     name : 'Backbone User',
-                                     email: BackboneFactory.next('person_email')
-                                      };
-                                    }
-                                   );
+  return {
+    name : 'Backbone User',
+    email: BackboneFactory.next('person_email')
+  };
+});
 ```
 
 ### Overriding defaults when creating objects
 
 ```javascript
 var userWithEmail = BackboneFactory.create('user', function(){
-                                             return {
-                                                email: 'overriden@example.com'
-                                              };
-                            });
- ```
+  return {
+    email: 'overriden@example.com'
+  };
+});
+```
 
-Contributing
-------------
+## Running Tests
+
+We are using jasmine 2.3 for testing. Specifically, the [ruby gem](http://jasmine.github.io/2.3/ruby_gem.html).
+To install the Gem, you can see instructions in its github repo [here](https://github.com/jasmine/jasmine-gem).
+
+After having the gem installed, enter into the Backbone-Factory local directory, and run:
+```
+$ rake jasmine
+```
+
+This will run a web server with the url [http://localhost:8888](http://localhost:8888), where you can see if the tests are passing.
+
+
+## Contributing
 
 1. Open a ticket on GitHub, maybe someone else has the problem too
 2. Make a fork of my GitHub repository
@@ -103,13 +109,21 @@ Contributing
 7. With all specs passing push your changes back to your fork
 8. Send me a pull request
 
+### To add a spec
 
-License
--------
+Just follow jasmine convention, by creating a Spec file (it must end in "Spec" before the "js" extension) within `Backbone-Factory/spec/javascripts`. For example: 
+```
+Backbone-Factory/spec/javascripts/NewFeatureSpec.js
+```
+
+After adding your necessary spec, run the tests as described [above](#running-tests)
+
+
+## License
 
 (The MIT License)
 
-Copyright (c) 2009, 2010, 2011
+Copyright (c) 2009-2015
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
