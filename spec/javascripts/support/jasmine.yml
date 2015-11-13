@@ -11,11 +11,11 @@
 #   - dist/**/*.js
 #
 src_files:
-    - public/javascripts/underscore-min.js
-    - public/javascripts/backbone-min.js
-    - public/javascripts/test-setup.js
-    - public/javascripts/backbone-factory.js
-    #- public/javascripts/**/*.js
+  - "public/javascripts/underscore-min.js"
+  - "public/javascripts/backbone-min.js"
+  - "public/javascripts/test-setup.js"
+  - "public/javascripts/backbone-factory.js"
+  #- public/javascripts/**/*.js
 
 # stylesheets
 #
@@ -41,6 +41,7 @@ stylesheets:
 #   - helpers/**/*.js
 #
 helpers:
+  - "spec/javascripts/helpers/*[hH]elper.js"
 
 # spec_files
 #
@@ -53,7 +54,7 @@ helpers:
 #   - **/*[sS]pec.js
 #
 spec_files:
-  - **/*[sS]pec.js
+  - "**/*[sS]pec.js"
 
 # src_dir
 #
@@ -75,4 +76,4 @@ src_dir:
 #
 # spec_dir: spec/javascripts
 #
-spec_dir:
+spec_dir: "spec"
