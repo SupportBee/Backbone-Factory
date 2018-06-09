@@ -97,7 +97,7 @@ Contributing
 
 1. Open a ticket on GitHub, maybe someone else has the problem too
 2. Make a fork of my GitHub repository
-3. Make a spec driven change to the code base (we use [jasmine](http://pivotal.github.com/jasmine/))
+3. Make a spec driven change to the code base (we use [jasmine](https://jasmine.github.io/))
 5. Make sure it works and all specs pass
 6. Update the README if needed to reflect your change / addition
 7. With all specs passing push your changes back to your fork
